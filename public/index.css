@@ -1,0 +1,103 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+#root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+}
+#main {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+#main img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: opacity 250ms ease;
+}
+#overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  background: rgba(0,0,0,0.55);
+  padding: 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+#qrcode {
+  display: block;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
+}
+#streamId {
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 18px;
+}
+#hint {
+  font-size: 12px;
+  opacity: 0.85;
+  text-align: center;
+  max-width: 160px;
+  line-height: 1.2;
+}
+#thumbs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(0,0,0,0.65);
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
+  box-sizing: border-box;
+}
+#thumbs img {
+  height: 100px;
+  width: auto;
+  border-radius: 6px;
+  opacity: 0.7;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: opacity 150ms ease, border-color 150ms ease;
+}
+#thumbs img.active {
+  opacity: 1;
+  border-color: #fff;
+}
+#emptyState {
+  font-size: 28px;
+  opacity: 0.8;
+  text-align: center;
+  padding: 24px;
+}
+#status {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 12px;
+  opacity: 0.7;
+  background: rgba(0,0,0,0.55);
+  padding: 6px 8px;
+  border-radius: 8px;
+}

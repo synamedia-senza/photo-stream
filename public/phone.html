@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Photo Stream (Phone Upload)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="phone.css">
+  </head>
+  <body>
+    <h1>Share a Photo to TV</h1>
+    <div id="streamId"></div>
+
+    <div class="card">
+      <label for="fileInput">
+        <button id="pickBtn" type="button">Choose Photo</button>
+      </label>
+      <input id="fileInput" type="file" accept="image/*" />
+      <img id="preview" />
+      <div id="status"></div>
+    </div>
+
+    <div class="card" id="recentCard" style="display:none;">
+      <div style="font-size:14px; opacity:0.8; margin-bottom:6px;">Recently uploaded:</div>
+      <div id="tinyGallery"></div>
+    </div>
+
+    <script src="phone.js"></script>
+  </body>
+</html>
