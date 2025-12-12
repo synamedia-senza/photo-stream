@@ -5,11 +5,11 @@ const mainImgEl = document.getElementById("mainImg");
 const emptyStateEl = document.getElementById("emptyState");
 const statusEl = document.getElementById("status");
 
-const S3_BUCKET = "senza-developer"; // demo: hardcode for now
+const S3_BUCKET = "senza-developer";
 const BASE_PREFIX = "photo-stream";
 const POLL_MS = 15000;
 
-let lastSignature = ""; // stable signature of photos list
+let lastSignature = "";
 
 function generateCode(text, size) {
   const data = encodeURIComponent(text);
@@ -115,7 +115,6 @@ function signatureFor(list) {
 
 async function refreshPhotos() {
   try {
-    // no "Loading..." spam if nothing changes
     const r = await fetch(`/api/photos/${streamId}`);
     const data = await r.json();
     if (!data.photos) throw new Error("Bad response");
@@ -123,13 +122,11 @@ async function refreshPhotos() {
     const newList = data.photos;
     const newSig = signatureFor(newList);
 
-    // If nothing changed, just update the status text and bail.
     if (newSig === lastSignature) {
       setStatus(`Stream ${streamId} • ${photos.length} photo(s)`);
       return;
     }
 
-    // Something changed — update signature and proceed normally.
     lastSignature = newSig;
 
     const prevKeys = new Set(photos.map(p => p.key));
@@ -156,6 +153,45 @@ function startPolling() {
   setInterval(refreshPhotos, POLL_MS);
 }
 
+function focusActiveThumb() {
+  const activeThumb = thumbsEl.querySelector("img.active");
+  if (activeThumb) {
+    activeThumb.scrollIntoView({ inline: "center", behavior: "smooth", block: "nearest" });
+  }
+}
+
+function setActiveIndex(nextIndex) {
+  if (!photos.length) return;
+
+  if (nextIndex < 0) nextIndex = photos.length - 1;
+  if (nextIndex >= photos.length) nextIndex = 0;
+
+  if (nextIndex === activeIndex) return;
+
+  activeIndex = nextIndex;
+  showActive();
+  renderThumbActive();
+  focusActiveThumb();
+}
+
+async function clearPhotos() {
+  try {
+    setStatus("Clearing photos…");
+    const r = await fetch(`/api/clear/${streamId}`, { method: "POST" });
+    if (!r.ok) throw new Error("Clear failed");
+
+    photos = [];
+    activeIndex = -1;
+    lastSignature = ""; // so next refresh repaints
+    render();
+
+    setStatus(`Stream ${streamId} • 0 photo(s)`);
+  } catch (e) {
+    console.error(e);
+    setStatus("Error clearing photos");
+  }
+}
+
 function init() {
   streamIdEl.textContent = streamId;
 
@@ -164,7 +200,19 @@ function init() {
 
   startPolling();
 
-  // Nice-to-have sockets. If it fails, polling still works.
+  document.addEventListener("keydown", async function (event) {
+    switch (event.key) {
+      case "Enter": break;
+      case "Escape": await clearPhotos(); break;
+      case "ArrowUp": break;
+      case "ArrowDown": break;
+      case "ArrowLeft": setActiveIndex(activeIndex - 1); break;
+      case "ArrowRight": setActiveIndex(activeIndex + 1); break;
+      default: return;
+    }
+    event.preventDefault();
+  });
+
   try {
     const socket = io();
     socket.emit("joinStream", { streamId });
